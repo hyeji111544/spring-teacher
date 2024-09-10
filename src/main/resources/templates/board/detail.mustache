@@ -13,7 +13,7 @@
     {{/model.isOwner}}
 
     <div class="d-flex justify-content-end">
-            <b>작성자</b> : {{model.user.username}}
+        <b>작성자</b> : {{model.username}}
     </div>
 
     <!-- 게시글내용 -->
@@ -25,5 +25,92 @@
         </div>
     </div>
 </div>
+
+<!-- 댓글 -->
+<div class="card mt-3">
+    <!-- 댓글등록 -->
+    {{#sessionUser}}
+        <div class="card-body">
+            <form>
+                <input type="hidden" id="boardId" value="{{model.id}}">
+                <textarea class="form-control" rows="2" id="comment" placeholder="댓글을 입력해주세요"></textarea>
+                <div class="d-flex justify-content-end">
+                    <button type="button" onclick="saveReply()" class="btn btn-outline-primary mt-1">댓글등록</button>
+                </div>
+            </form>
+        </div>
+    {{/sessionUser}}
+
+    <!-- 댓글목록 -->
+    <div class="card-footer">
+        <b>댓글리스트</b>
+    </div>
+    <div class="list-group" id="reply-box">
+        {{#model.replies}}
+            <!-- 댓글아이템 -->
+            <div id="reply-{{id}}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <div class="px-1 me-1 bg-primary text-white rounded">{{username}}</div>
+                    <div>{{comment}}</div>
+                </div>
+                {{#isOwner}}
+                    <button onclick="deleteReply('{{id}}')" type="button" class="btn">🗑</button>
+                {{/isOwner}}
+            </div>
+        {{/model.replies}}
+    </div>
+</div>
+
+<script>
+
+    // 1. 책임 -> 데이터 바인딩
+    function replyItem(reply) {
+        return `<div id="reply-${reply.id}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <div class="px-1 me-1 bg-primary text-white rounded">${reply.username}</div>
+                    <div>${reply.comment}</div>
+                </div>
+                        <button onclick="deleteReply('${reply.id}')" type="button" class="btn">🗑</button>
+            </div>`;
+    }
+
+    // 2. 책임 -> 통신해서 데이터 가져오고 응답 받으면 CSR
+    async function saveReply() {
+        //1. reply 객체 만들기 (id 로 찾아)
+        let reply = {
+            comment: $("#comment").val(),
+            boardId: $("#boardId").val()
+        };
+
+        //2. fetch 요청
+        let response = await fetch(`/api/reply`, {
+            method: "post",
+            body: JSON.stringify(reply),
+            headers: {
+                "Content-type": "application/json; charset=utf-8"
+            }
+        });
+        let responseBody = await response.json(); // dto
+        console.log(responseBody);
+
+        //3. CSR 하기
+        $("#reply-box").prepend(replyItem(responseBody.body));
+        $("textarea").val(""); //댓글 입력이 완료되면 기존에 적어져 있던 부분 없앰
+    }
+
+    // put, post 말고는 body 가 필요없다.
+    async function deleteReply(id) {
+        let response = await fetch(`/api/reply/${id}`, {
+            method: "delete"
+        });
+        console.log(response);
+        let responseBody = await response.json(); // 파싱
+        if (response.ok) {
+            $(`#reply-${id}`).remove();
+        } else {
+            alert(responseBody.msg);
+        }
+    }
+</script>
 
 {{>layout/footer}}

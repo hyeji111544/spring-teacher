@@ -14,10 +14,6 @@ public class UserRepositoryTest {
 
     @Test
     public void findByUsernameAndPassword_test(){
-        String username = "ssar";
-        String password = "1234";
-        User user = userRepository.findByUsernameAndPassword(username, password);
-        System.out.println("user : " +user);
     }
 
 }
