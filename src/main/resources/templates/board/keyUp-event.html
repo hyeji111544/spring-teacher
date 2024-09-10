@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <input type="text" id="keyword">
+    <script>
+        let keyword = document.querySelector("#keyword");
+
+        keyword.addEventListener("keyup", function (e) {
+            // 1. 입력한 값 가져오기
+            let value = e.target.value;
+            console.log(e.target.value);
+            //2. fetch 요청
+            //3. 결과로 CSR
+        })
+    </script>
+</body>
+
+</html>

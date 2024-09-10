@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
+    //concat('%', :title, '%')
     @Query("select b from Board b where b.title like %:title% order by b.id desc ")
     List<Board> mFindAll(@Param("title") String title);
 

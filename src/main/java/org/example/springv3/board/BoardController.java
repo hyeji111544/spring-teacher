@@ -28,9 +28,17 @@ public class BoardController {
     private final HttpSession session;
     private final BoardService boardService;
 
+
+    @GetMapping("/board")
+    public ResponseEntity<?> boardList(@RequestParam(name = "title", required = false) String title) {
+        List<BoardResponse.DTO> boardList = boardService.게시글목록보기(title);
+        return ResponseEntity.ok(Resp.ok(boardList));
+    }
+
     @GetMapping("/")
     public String list(@RequestParam(name = "title", required = false) String title, HttpServletRequest request) {
-        List<Board> boardList = boardService.게시글목록보기(title);
+        //  HttpServletRequest request 얘는 가방같은 역할 화면에 뿌리기 위해 담아둠
+        List<BoardResponse.DTO> boardList = boardService.게시글목록보기(title);
         request.setAttribute("models", boardList);
         return "board/list";
     }
