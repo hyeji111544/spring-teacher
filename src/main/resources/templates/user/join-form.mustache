@@ -8,9 +8,10 @@
     <div class="card">
         <div class="card-header"><b>회원가입을 해주세요</b></div>
         <div class="card-body">
-            <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="/join" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return valid()">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" value="haha">
+                    <input type="text" class="form-control" placeholder="Enter username" name="username" id="username" value="haha">
+                    <button onclick="sameCheck()" type="button" class="btn btn-outline-primary">중복체크</button>
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password"
@@ -25,5 +26,40 @@
         </div>
     </div>
 </div>
+
+<script>
+    // bool 타입은 is 를 붙여 만든다.
+    let isSameUsername = true;
+
+    async function sameCheck() {
+        // 1. username 가져오기
+        let username = $("#username").val();
+        console.log(username);
+        // 2. fetch로 통신하기 (get, url 모름)
+        let response =await fetch(`/user/samecheck?username=${username}`);
+        let responseBody = await response.json();
+        console.log(responseBody);
+        // 3.  중복됐으면 isSameUsername = true 어음으로 받으면 패치댄 해야함 아니면어웨이트
+        if(responseBody.body){
+            isSameUsername=true;
+            alert("중복된 유저네임이에요");
+        }else {
+            isSameUsername= false;
+            alert("가용가능한 이름입니다");
+            $("#username").attr("readOnly", true);
+        }
+
+        // 4. 중복 안됐으면 = isSameUsername = false; -> username input 을 read Only 로
+    }
+
+    function valid(){
+        if(isSameUsername){
+            alert("중복체크가 필요합니다.");
+            return false;
+        }else {
+            return true;
+        }
+    }
+</script>
 
 {{> layout/footer}}

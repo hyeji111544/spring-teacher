@@ -3,6 +3,7 @@ package org.example.springv3.user;
 import lombok.RequiredArgsConstructor;
 import org.example.springv3.core.error.ex.Exception401;
 import org.example.springv3.core.error.ex.Exception400;
+import org.example.springv3.reply.ReplyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ReplyRepository replyRepository;
 
 
     public User 로그인(UserRequest.LoginDTO loginDTO) {
@@ -34,5 +36,16 @@ public class UserService {
 
         userRepository.save(joinDTO.toEntity());
 
+    }
+
+    public boolean 유저네임중복되었니(String username) {
+        System.out.println("1"+username);
+        Optional<User> userOP = userRepository.findByUsername(username);
+        System.out.println("2"+userOP.isPresent());
+        if(userOP.isPresent()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

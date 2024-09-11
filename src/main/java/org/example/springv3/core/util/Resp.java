@@ -11,10 +11,14 @@ public class Resp<T> {
     private T body;
 
     public static <B> Resp<?> ok(B body){
-        return new Resp<>(200, "성공", body); // 돌랴줄 ㅐ이ㅑ
+        return new Resp<>(200, "성공", body);
+    }
+
+    public static <B> Resp<?> ok(B body, String msg){
+        return new Resp<>(200, msg, body);
     }
 
     public static Resp<?> fail(Integer status, String msg){
-        return new Resp<>(status, msg, null); // 실패해서 바디에 넣을 게 엇음
+        return new Resp<>(status, msg, null);
     }
 }
