@@ -1,0 +1,50 @@
+<html>
+
+<body>
+    <label>Search</label>
+    <input type="text" id="search-box" />
+    <br>
+    <span> 입력
+        <p id='show-api-call-count'></p>
+    </span>
+    <span> 디바운스
+        <p id="show-debounce-count"></p>
+    </span>
+</body>
+
+
+<script>
+    var searchBoxDom = document.getElementById('search-box');
+    var apiCallCount = 0;
+
+    const processChange = debounce(() => {
+        saveInput();
+    }, 300); // 300ms 후에 호출
+
+    searchBoxDom.addEventListener('input', function () {
+        var showApiCallCountDom = document.getElementById('show-api-call-count');
+        var apiCallCount = showApiCallCountDom.innerHTML || 0;
+
+        processChange()
+
+        apiCallCount = parseInt(apiCallCount) + 1;
+
+        showApiCallCountDom.innerHTML = apiCallCount;
+    })
+
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+    function saveInput() {
+        var showDebountDom = document.querySelector('#show-debounce-count');
+        apiCallCount += 1;
+        showDebountDom.innerHTML = apiCallCount;
+    }
+
+</script>
+
+</html>

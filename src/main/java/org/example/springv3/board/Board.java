@@ -1,5 +1,6 @@
 package org.example.springv3.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,10 +29,12 @@ public class Board {
     private Timestamp createdAt;
 
     // fk
+    //@JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     //@JsonIgnoreProperties({"board"}) // json 데이터로 만들러 가지마라
+    //@JsonIgnore
     @OneToMany(mappedBy = "board")//반대 방향에도 거는게 양방향 매핑
     private List<Reply> replies;
 
@@ -44,4 +47,15 @@ public class Board {
         this.user = user;
     }
 
+    @Override
+    public String toString() {
+        return "Board{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                ", replies=" + replies +
+                '}';
+    }
 }

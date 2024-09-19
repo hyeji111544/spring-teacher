@@ -10,6 +10,7 @@ import org.example.springv3.core.error.ex.ExceptionApi404;
 import org.example.springv3.core.util.Resp;
 import org.example.springv3.user.User;
 import org.example.springv3.user.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,9 +30,12 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/")
-    public String list(@RequestParam(name = "title", required = false) String title, HttpServletRequest request) {
-        List<Board> boardList = boardService.게시글목록보기(title);
-        request.setAttribute("models", boardList);
+    public String list(@RequestParam(name = "title", required = false) String title,
+                       @RequestParam(name = "page", required = false, defaultValue = "0")  Integer page,
+                       HttpServletRequest request) {
+        BoardResponse.PageDTO pageDTO =  boardService.게시글목록보기v2(title, page);
+        request.setAttribute("model", pageDTO);
+        System.out.println(pageDTO);
         return "board/list";
     }
 

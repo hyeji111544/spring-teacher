@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.springv3.core.error.ex.Exception400;
 import org.example.springv3.core.error.ex.Exception403;
 import org.example.springv3.user.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,19 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardQueryRepository boardQueryRepository;
 
+    public BoardResponse.PageDTO 게시글목록보기v2(String title, int page) {
+            Pageable pageable = PageRequest.of(page, 3, Sort.Direction.DESC, "id");
+        if(title==null){
+            Page<Board> boardList = boardRepository.findAll(pageable);
+            return new BoardResponse.PageDTO(boardList, "");
+        }else {
+            // pageable 이 sort 해줘서  order by b.id desc 이거 삭제해도 됨
+            Page<Board> boardList = boardRepository.mFindAll(title, pageable);
+            return new BoardResponse.PageDTO(boardList, title);
+        }
+    }
+
+/*
     public List<Board> 게시글목록보기(String title) {
         if(title==null){
         //Pageable pg = PageRequest.of(0, 3, Sort.Direction.DESC, "id");
@@ -36,6 +50,8 @@ public class BoardService {
         }
     }
 
+
+ */
 
     @Transactional
     public void 게시글삭제하기(Integer id, User sessionUser) {
